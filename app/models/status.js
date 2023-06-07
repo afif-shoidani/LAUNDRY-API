@@ -9,7 +9,11 @@ module.exports = (sequelize, Sequelize) => {
      */
     static associate(models) {
       // define association here
-      Status.belongsTo(models.User);
+      Status.belongsTo(models.User, {
+        foreignKey: "user_id",
+        onDelete: "CASCADE",
+        onUpdate: "RESTRICT",
+      });
     }
   }
   Status.init(

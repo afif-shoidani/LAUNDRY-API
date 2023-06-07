@@ -57,7 +57,7 @@ module.exports = {
       limit: 10,
       include: [],
       where: {
-        user_id: req.userId,
+        user_id: req.user_id,
       },
       order: [["createdAt", "DESC"]],
     })
@@ -84,7 +84,7 @@ module.exports = {
     return Status.create({
       title: req.body.title,
       body: req.body.body,
-      user_id: req.userId,
+      user_id: req.user_id,
     })
       .then((doc) => {
         const status = {
@@ -112,7 +112,7 @@ module.exports = {
           });
         }
 
-        if (status.user_id !== req.userId) {
+        if (status.user_id !== req.user_id) {
           return res.status(403).send({
             status_response: "Bad Request",
             errors: "Different User Id",
@@ -157,7 +157,7 @@ module.exports = {
           });
         }
 
-        if (status.user_id !== req.userId) {
+        if (status.user_id !== req.user_id) {
           return res.status(403).send({
             status_response: "Bad Request",
             errors: "Different User Id",

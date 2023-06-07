@@ -3,8 +3,8 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("userRoles", {
-      userId: {
+    await queryInterface.createTable("userroles", {
+      user_id: {
         type: Sequelize.INTEGER,
         references: {
           model: "users",
@@ -13,7 +13,7 @@ module.exports = {
         onDelete: "CASCADE",
         onUpdate: "RESTRICT",
       },
-      roleId: {
+      role_id: {
         type: Sequelize.INTEGER,
         references: {
           model: "roles",
