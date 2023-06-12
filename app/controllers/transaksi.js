@@ -1,23 +1,23 @@
-const Status = require("../models").Status;
+const Transaksi = require("../models").Transaksi;
 
 module.exports = {
   getById(req, res) {
-    return Status.findByPk(req.params.id, {
+    return Transaksi.findByPk(req.params.id, {
       include: [],
     })
       .then((doc) => {
         if (!doc) {
           return res.status(404).send({
             status_response: "Not Found",
-            errors: "Status Not Found",
+            errors: "Transaksi Not Found",
           });
         }
-        const status = {
+        const Transaksi = {
           status_response: "OK",
           status: doc,
           errors: null,
         };
-        return res.status(200).send(status);
+        return res.status(200).send(Transaksi);
       })
       .catch((error) => {
         res.status(400).send({
@@ -28,7 +28,7 @@ module.exports = {
   },
 
   list(req, res) {
-    return Status.findAll({
+    return Transaksi.findAll({
       limit: 10,
       include: [],
       order: [["createdAt", "DESC"]],
@@ -52,12 +52,12 @@ module.exports = {
       });
   },
 
-  listStatusUser(req, res) {
-    return Status.findAll({
+  listTransaksiPelanggan(req, res) {
+    return Transaksi.findAll({
       limit: 10,
       include: [],
       where: {
-        user_id: req.user_id,
+        pelanggan_id: req.pelanggan_id,
       },
       order: [["createdAt", "DESC"]],
     })
@@ -81,18 +81,18 @@ module.exports = {
   },
 
   add(req, res) {
-    return Status.create({
-      title: req.body.title,
-      body: req.body.body,
-      user_id: req.user_id,
+    return Transaksi.create({
+      tanggal: req.body.tanggal,
+      pelanggan_id: req.pelanggan_id,
+      item_id: req.item_id,
     })
       .then((doc) => {
-        const status = {
+        const Transaksi = {
           status_response: "Created",
           status: doc,
           errors: null,
         };
-        return res.status(201).send(status);
+        return res.status(201).send(Transaksi);
       })
       .catch((error) => {
         res.status(400).send({
@@ -103,34 +103,34 @@ module.exports = {
   },
 
   update(req, res) {
-    return Status.findByPk(req.params.id, {})
-      .then((status) => {
-        if (!status) {
+    return Transaksi.findByPk(req.params.id, {})
+      .then((Transaksi) => {
+        if (!Transaksi) {
           return res.status(404).send({
             status_response: "Bad Request",
-            errors: "Status Not Found",
+            errors: "Transaksi Not Found",
           });
         }
 
-        if (status.user_id !== req.user_id) {
+        if (Transaksi.pelanggan_id !== req.pelanggan_id) {
           return res.status(403).send({
             status_response: "Bad Request",
-            errors: "Different User Id",
+            errors: "Different Pelanggan Id",
           });
         }
 
-        return status
-          .update({
-            title: req.body.title || status.title,
-            body: req.body.body || status.body,
-          })
+        return Transaksi.update({
+          tanggal: req.body.tanggal || Transaksi.tanggal,
+          pelanggan_id: req.pelanggan_id,
+          item_id: req.item_id,
+        })
           .then((doc) => {
-            const status = {
+            const Transaksi = {
               status_response: "OK",
               status: doc,
               errors: null,
             };
-            return res.status(200).send(status);
+            return res.status(200).send(Transaksi);
           })
           .catch((error) => {
             res.status(400).send({
@@ -148,24 +148,23 @@ module.exports = {
   },
 
   delete(req, res) {
-    return Status.findByPk(req.params.id)
-      .then((status) => {
-        if (!status) {
+    return Transaksi.findByPk(req.params.id)
+      .then((Transaksi) => {
+        if (!Transaksi) {
           return res.status(400).send({
             status_response: "Bad Request",
-            errors: "Status Not Found",
+            errors: "Transaksi Not Found",
           });
         }
 
-        if (status.user_id !== req.user_id) {
+        if (Transaksi.pelanggan_id !== req.pelanggan_id) {
           return res.status(403).send({
             status_response: "Bad Request",
-            errors: "Different User Id",
+            errors: "Different Pelanggan Id",
           });
         }
 
-        return status
-          .destroy()
+        return Transaksi.destroy()
           .then(() =>
             res.status(204).send({
               status_response: "No Content",

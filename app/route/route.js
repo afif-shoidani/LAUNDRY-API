@@ -1,6 +1,6 @@
 const verifySignUpController = require("../controllers/verifySignUp.js");
 const verifySignController = require("../controllers/verifySign.js");
-const statusController = require("../controllers/status.js");
+const transaksiController = require("../controllers").Transaksi;
 const verifyJwtTokenController = require("../controllers/verifyJwtToken.js");
 
 module.exports = function (app) {
@@ -10,29 +10,30 @@ module.exports = function (app) {
   });
 
   //User Auth
-  app.post("/api/auth/signup", [verifySignUpController.checkDuplicateUserNameOrEmail, verifySignUpController.checkRolesExisted], verifySignController.signup);
+  app.post("/api/auth/signup", [verifySignUpController.checkDuplicatePelangganNameOrEmail, verifySignUpController.checkRolesExisted], verifySignController.signup);
 
   app.post("/api/auth/signin", (req, res) => {
     verifySignController.signIn(req, res);
   });
 
-  //Status
-  app.get("/api/status", (req, res) => {
-    statusController.list(req, res);
+  //Transaksi
+  app.post("/api/transaksi", [verifyJwtTokenController.verifyToken, verifyJwtTokenController.isAdmin], (req, res) => {
+    transaksiController.add(req, res);
   });
-  app.get("/api/statususer", [verifyJwtTokenController.verifyToken], (req, res) => {
-    statusController.listStatusUser(req, res);
+  app.get("/api/transaksi", (req, res) => {
+    transaksiController.list(req, res);
   });
-  app.get("/api/status/:id", [verifyJwtTokenController.verifyToken, verifyJwtTokenController.isAdmin], (req, res) => {
-    statusController.getById(req, res);
+  app.get("/api/transaksiuser", [verifyJwtTokenController.verifyToken], (req, res) => {
+    transaksiController.listtransaksiUser(req, res);
   });
-  app.post("/api/status", [verifyJwtTokenController.verifyToken, verifyJwtTokenController.isAdmin], (req, res) => {
-    statusController.add(req, res);
+  app.get("/api/transaksi/:id", [verifyJwtTokenController.verifyToken, verifyJwtTokenController.isAdmin], (req, res) => {
+    transaksiController.getById(req, res);
   });
-  app.put("/api/status/:id", [verifyJwtTokenController.verifyToken, verifyJwtTokenController.isAdmin], (req, res) => {
-    statusController.update(req, res);
+
+  app.put("/api/transaksi/:id", [verifyJwtTokenController.verifyToken, verifyJwtTokenController.isAdmin], (req, res) => {
+    transaksiController.update(req, res);
   });
-  app.delete("/api/status/:id", [verifyJwtTokenController.verifyToken, verifyJwtTokenController.isAdmin], (req, res) => {
-    statusController.delete(req, res);
+  app.delete("/api/transaksi/:id", [verifyJwtTokenController.verifyToken, verifyJwtTokenController.isAdmin], (req, res) => {
+    transaksiController.delete(req, res);
   });
 };

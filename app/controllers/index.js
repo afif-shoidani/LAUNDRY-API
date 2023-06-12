@@ -1,11 +1,11 @@
 const verifySign = require("./verifySign");
 const verifySignUp = require("./verifySignUp");
 const verifyJwtToken = require("./verifyJwtToken");
-const status = require("./status");
+const transaksi = require("./transaksi");
 
 module.exports = {
   verifySign,
   verifySignUp,
   verifyJwtToken,
-  status,
+  transaksi,
 };

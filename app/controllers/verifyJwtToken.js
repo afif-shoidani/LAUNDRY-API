@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const config = require("../config/configRoles");
-const User = require("../models").User;
+const Pelanggan = require("../models").Pelanggan;
 
 module.exports = {
   verifyToken(req, res, next) {
@@ -32,14 +32,14 @@ module.exports = {
           errors: err,
         });
       }
-      req.userId = decoded.id;
+      req.pelanggan_id = decoded.id;
       next();
     });
   },
 
   isAdmin(req, res, next) {
-    User.findByPk(req.userId).then((user) => {
-      user.getRoles().then((roles) => {
+    Pelanggan.findByPk(req.pelanggan_id).then((pelanggan) => {
+      Pelanggan.getRoles().then((roles) => {
         for (let i = 0; i < roles.length; i++) {
           console.log(roles[i].name);
           if (roles[i].name.toUpperCase() === "ADMIN") {
@@ -57,9 +57,9 @@ module.exports = {
     });
   },
 
-  isPmOrAdmin(req, res, next) {
-    User.findByPk(req.userId).then((user) => {
-      user.getRoles().then((roles) => {
+  isPelangganOrAdmin(req, res, next) {
+    Pelanggan.findByPk(req.pelanggan_id).then((pelanggan) => {
+      Pelanggan.getRoles().then((roles) => {
         for (let i = 0; i < roles.length; i++) {
           if (roles[i].name.toUpperCase() === "ADMIN") {
             next();

@@ -1,15 +1,15 @@
-const User = require("../models").User;
+const Pelanggan = require("../models").Pelanggan;
 const config = require("../config/configRoles.js");
 const ROLEs = config.ROLEs;
 
 module.exports = {
-  checkDuplicateUserNameOrEmail(req, res, next) {
-    User.findOne({
+  checkDuplicatePelangganNameOrEmail(req, res, next) {
+    Pelanggan.findOne({
       where: {
         name: req.body.name,
       },
-    }).then((user) => {
-      if (user) {
+    }).then((pelanggan) => {
+      if (pelanggan) {
         res.status(400).send({
           auth: false,
           name: req.body.name,
@@ -19,12 +19,12 @@ module.exports = {
         return;
       }
 
-      User.findOne({
+      Pelanggan.findOne({
         where: {
           email: req.body.email,
         },
-      }).then((user) => {
-        if (user) {
+      }).then((pelanggan) => {
+        if (pelanggan) {
           res.status(400).send({
             auth: false,
             name: req.body.name,

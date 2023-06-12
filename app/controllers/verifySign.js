@@ -1,19 +1,19 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const db = require("../models/index.js");
-const User = require("../models").User;
+const Pelanggan = require("../models").Pelanggan;
 const Role = require("../models").Role;
 const Op = db.Sequelize.Op;
 const config = require("../config/configRoles.js");
 
 module.exports = {
   signup(req, res) {
-    return User.create({
+    return Pelanggan.create({
       name: req.body.name,
       email: req.body.email,
       password: bcrypt.hashSync(req.body.password, 8),
     })
-      .then((user) => {
+      .then((pelanggan) => {
         Role.findAll({
           where: {
             name: {
@@ -22,10 +22,10 @@ module.exports = {
           },
         })
           .then((roles) => {
-            user.setRoles(roles).then(() => {
+            pelanggan.setRoles(roles).then(() => {
               res.status(200).send({
                 auth: true,
-                message: "User registered successfully!",
+                message: "pelanggan registered successfully!",
                 errors: null,
               });
             });
@@ -41,7 +41,7 @@ module.exports = {
       .catch((err) => {
         res.status(500).send({
           auth: false,
-          nama: req.body.name,
+          name: req.body.name,
           message: "Error",
           errors: err,
         });
@@ -49,22 +49,22 @@ module.exports = {
   },
 
   signIn(req, res) {
-    return User.findOne({
+    return Pelanggan.findOne({
       where: {
         email: req.body.email,
       },
     })
-      .then((user) => {
-        if (!user) {
+      .then((pelanggan) => {
+        if (!pelanggan) {
           return res.status(404).send({
             auth: false,
             accessToken: null,
             message: "Error",
-            errors: "User Not Found.",
+            errors: "Pelanggan Not Found.",
           });
         }
 
-        var passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
+        var passwordIsValid = bcrypt.compareSync(req.body.password, pelanggan.password);
         if (!passwordIsValid) {
           return res.status(401).send({
             auth: false,
@@ -73,10 +73,7 @@ module.exports = {
             errors: "Invalid Password!",
           });
         }
-
-        console.log(">> config.secret", config.secret);
-        console.log(">> user.id", user.id);
-        const jwtToken = jwt.sign({ id: user.id }, config.secret, { expiresIn: 86400 });
+        const jwtToken = jwt.sign({ id: pelanggan.id }, config.secret, { expiresIn: 86400 });
         var token = `Bearer ${jwtToken}`;
         console.log(">> token is ", token);
 
